@@ -32,6 +32,19 @@ export class Rendertron {
     this.renderer = new Renderer(browser, config);
   }
 
+  handleFixProtocol(href: string) {
+    if (href.startsWith('https://') || href.startsWith('https://') ) {
+      return href;
+      } else {
+        const parsedUrl = url.parse(href);
+        if (!parsedUrl.host) {
+          return parsedUrl.protocol + '/' + parsedUrl.path;
+        } else {
+          return parsedUrl.protocol + '//' + parsedUrl.host + parsedUrl.path;
+        }
+    }
+   }
+  
   async initialize(config?: Config) {
     // Load config
     this.config = config || (await ConfigManager.getConfiguration());
@@ -143,6 +156,8 @@ export class Rendertron {
     if (!this.renderer) {
       throw new Error('No renderer initalized yet.');
     }
+    
+    url = this.handleFixProtocol(url);
 
     if (this.restricted(url)) {
       ctx.status = 403;
