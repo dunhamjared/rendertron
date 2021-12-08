@@ -139,6 +139,22 @@ export class Rendertron {
   }
 
   async handleRenderRequest(ctx: Koa.Context, url: string) {
+    
+    if (href.startsWith('https://') || href.startsWith('https://') ) {
+    
+        url = href;
+        
+    } else {
+    
+        const parsedUrl = url.parse(href);
+        
+        if (!parsedUrl.host) {
+            url = parsedUrl.protocol + '/' + parsedUrl.path;
+        } else {
+            url = parsedUrl.protocol + '//' + parsedUrl.host + parsedUrl.path;
+        }
+    }
+    
     if (!this.renderer) {
       throw new Error('No renderer initalized yet.');
     }
